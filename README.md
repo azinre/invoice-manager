@@ -1,7 +1,7 @@
 # Invoice Manager
-- Name: **Your Name**
-- Student Number: **Your Student Number**
-- Section Number: **Course Section Number**
+- Name: Azin Rezaeian
+- Student Number: 041077303
+- Section Number: 23S_CST8257_300
 
 
 
