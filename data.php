@@ -1,5 +1,15 @@
 <?php 
+  session_start();
+
   $statuses = ['all', 'draft', 'pending', 'paid'];
+
+  if (isset($_SESSION['invoices'])){
+    $invoices = $_SESSION['invoices'];
+  }
+  else{
+   $_SESSION['invoices'] = $invoices;
+  }
+
 
   $invoices = [
     [
