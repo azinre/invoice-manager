@@ -57,6 +57,9 @@
         <td> <?php echo  $invoice['status']; ?> </td>
         <td> <?php echo  $invoice['client']; ?> </td>
         <td> <?php echo  $invoice['email']; ?> </td>
+        <td>
+            <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
+        </td>
     </tr>
   <?php endforeach; ?>
   

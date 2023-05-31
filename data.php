@@ -1,5 +1,5 @@
 <?php 
-  session_start();
+  //session_start();
 
   $statuses = ['all', 'draft', 'pending', 'paid'];
 
@@ -7,7 +7,7 @@
     $invoices = $_SESSION['invoices'];
   }
   else{
-   $_SESSION['invoices'] = $invoices;
+   //$_SESSION['invoices'] = $invoices;
   }
 
 
