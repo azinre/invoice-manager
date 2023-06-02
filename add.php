@@ -2,7 +2,7 @@
 require "data.php";
 require "functions.php";
 //require "index.php";
-//session_start();
+session_start();
 
 $errors = [];
 
@@ -41,28 +41,36 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         $errors[] = 'Invalid Invoice Status.';
     }
 
+    // if (empty($errors)) {
+    //     array_push($invoices, [
+    //         'number' => generateInvoiceNumber(),
+    //         'client' => $client,
+    //         'email' => $email,
+    //         'amount' => $amount,
+    //         'status' => $status
+    //     ]);
     if (empty($errors)) {
-        array_push($invoices, [
+        $newInvoice = [
             'number' => generateInvoiceNumber(),
             'client' => $client,
             'email' => $email,
             'amount' => $amount,
             'status' => $status
-        ]);
-        
-        $_SESSION['invoices'] = $invoices;
+        ];
+
+        $_SESSION['invoices'][] = $newInvoice;
         header("Location: index.php");
         exit();
     }
 
+
 }
 
 // $formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
-// $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
+//  $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
 
-// // Clear the session variables
-// unset($_SESSION['form_data']);
-// unset($_SESSION['errors']);
+//  unset($_SESSION['form_data']);
+//  unset($_SESSION['errors']);
 ?>
 
 <!DOCTYPE html>

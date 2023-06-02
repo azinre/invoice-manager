@@ -54,20 +54,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Invalid Invoice Status.';
     }
 
+    // if (empty($errors)) {
+    //     array_push($invoices, [
+    //         'number' => generateInvoiceNumber(),
+    //         'client' => $client,
+    //         'email' => $email,
+    //         'amount' => $amount,
+    //         'status' => $status
+    //     ]); 
+    // foreach ($invoices as &$inv) {
+    //     if ($inv['number'] === $invoiceNumber) {
+    //         $inv = $invoice;
+    //         break;
+    //     }
+    // } 
     if (empty($errors)) {
-        array_push($invoices, [
-            'number' => generateInvoiceNumber(),
-            'client' => $client,
-            'email' => $email,
-            'amount' => $amount,
-            'status' => $status
-        ]); 
-    foreach ($invoices as &$inv) {
-        if ($inv['number'] === $invoiceNumber) {
-            $inv = $invoice;
-            break;
-        }
-    }    
+        foreach ($invoices as &$inv) {
+            if ($inv['number'] === $invoiceNumber) {
+                $inv['client'] = $client;
+                $inv['email'] = $email;
+                $inv['amount'] = $amount;
+                $inv['status'] = $status;
+                break;
+            }
+        }    
     $_SESSION['invoices'] = $invoices;
     header("Location: index.php");
     exit;
