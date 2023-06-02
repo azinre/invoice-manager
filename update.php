@@ -1,11 +1,10 @@
 <?php
 session_start();
 require "data.php";
+require "functions.php";
 
-// Get the invoice number from the query string
 $invoiceNumber = $_GET['invoice_number'] ?? '';
 
-// Find the invoice by its number
 $invoice = null;
 foreach ($invoices as $inv) {
     if ($inv['number'] === $invoiceNumber) {
@@ -14,36 +13,65 @@ foreach ($invoices as $inv) {
     }
 }
 
-// Redirect back to index.php if the invoice is not found
 if (!$invoice) {
     header("Location: index.php");
     exit;
 }
 
-// Update the invoice if the form is submitted
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Perform validation here
+    $client = $_POST['client'];
+    $email = $_POST['email'];
+    $amount = $_POST['amount'];
+    $status = $_POST['status'];
 
-    // Update the invoice data
-    $invoice['client'] = $_POST['client'];
-    $invoice['email'] = $_POST['email'];
-    $invoice['amount'] = $_POST['amount'];
-    $invoice['status'] = $_POST['status'];
+    if (empty($client)){
+        $errors[] = 'Client name is required.';
+    }elseif(!preg_match('/^[a-zA-Z ]+$/', $client)) {
+        $errors[] = 'Client Name should only contain letters and spaces.';
+    } elseif (strlen($client) > 255) {
+        $errors[] = 'Client Name cannot be more than 255 characters.';
+    }
 
-    // Update the invoice in the $invoices array
+
+    if (empty($email)) {
+        $errors[] = 'Client Email is required.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Client Email is not a valid email address.';
+    }
+
+
+    if (empty($amount)) {
+        $errors[] = 'Invoice Amount is required.';
+    } elseif (!is_numeric($amount)) {
+        $errors[] = 'Invoice Amount must be a number.';
+    }
+
+
+    if (empty($status)) {
+        $errors[] = 'Invoice Status is required.';
+    } elseif (!in_array($status, ['draft', 'pending', 'paid'])) {
+        $errors[] = 'Invalid Invoice Status.';
+    }
+
+    if (empty($errors)) {
+        array_push($invoices, [
+            'number' => generateInvoiceNumber(),
+            'client' => $client,
+            'email' => $email,
+            'amount' => $amount,
+            'status' => $status
+        ]); 
     foreach ($invoices as &$inv) {
         if ($inv['number'] === $invoiceNumber) {
             $inv = $invoice;
             break;
         }
-    }
-
-    // Update the invoices in the session
+    }    
     $_SESSION['invoices'] = $invoices;
-
-    // Redirect back to index.php
     header("Location: index.php");
     exit;
+    }
 }
 ?>
 
@@ -78,6 +106,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     </nav>
     <h1>Update Invoice</h1>
+    <?php if (!empty($errors)) : ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($errors as $error) : ?>
+                    <li><?php echo $error; ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
 
     <form action="" method="post">
         <label for="client">Client Name:</label>
@@ -99,8 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Update Invoice</button>
     </form>
     <form class = "form" method="post" action="delete.php">
-          <input type="hidden" name="number" value="<?php $invoice['number']; ?>">
-          <button class="button danger"> Delete Button</button>
+        <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
+        <button class="button danger"> Delete </button>
     </form>
 </body>
 </html>
