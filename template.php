@@ -1,5 +1,5 @@
 <?php 
-//require "data.php";
+require "data.php";
 ?>
 
 <!DOCTYPE html>

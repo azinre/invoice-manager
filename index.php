@@ -79,8 +79,8 @@ function generateInvoiceNumber(){
     }
     return ($number);
 }
- $invoices = $_SESSION['invoices'];
-
+ //$invoices = $_SESSION['invoices'];
+$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
 include "template.php"
 
 
