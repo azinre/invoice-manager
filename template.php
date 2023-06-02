@@ -60,7 +60,13 @@ require "data.php";
         <td> <?php echo  $invoice['email']; ?> </td>
         <td>
         <td>
-          <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a></td>
+          <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
+        </td>
+        <td>
+        <form method="post" action="index.php">
+            <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
+            <button type="submit" class="delete-button">Delete</button>
+        </form>
         </td>
     </tr>
   <?php endforeach; ?>

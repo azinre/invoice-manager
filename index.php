@@ -39,6 +39,25 @@ if(isset($_POST['status'])){
     $_SESSION['invoices'] = $invoices;
 
 }
+if(isset($_POST['number'])){
+  $number = $_POST['number'];
+  $index = array_key_first(array_filter($invoices, function ($invoice) use ($number) {
+      return $invoice['number'] == $number;
+  }));
+  if ($index !== null) {
+      
+      unset($invoices[$index]);
+      
+      
+      $invoices = array_values($invoices);
+
+      
+      $_SESSION['invoices'] = $invoices;
+
+  //unset($_SESSION['invoices'][$index]);
+  }
+}
+
 
  $invoices = $_SESSION['invoices'];
  //$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
