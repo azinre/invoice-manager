@@ -58,7 +58,8 @@
         <td> <?php echo  $invoice['client']; ?> </td>
         <td> <?php echo  $invoice['email']; ?> </td>
         <td>
-            <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
+        <td>
+          <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a></td>
         </td>
     </tr>
   <?php endforeach; ?>

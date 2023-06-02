@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         ];
 
         $_SESSION['invoices'][] = $newInvoice;
+
         header("Location: index.php");
         exit();
     }
