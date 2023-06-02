@@ -25,9 +25,9 @@ if (isset($_GET['status'])) {
 }
 
 if(isset($_POST['status'])){
-      var_dump($_POST);
+      //var_dump($_POST);
       //var_dump($_SERVER['REQUEST_METHOD']);
-      var_dump($errors);
+      //var_dump($errors);
     array_push($invoices,[
         'number' => generateInvoiceNumber(),
         'client' => $_POST['client'],
@@ -40,8 +40,8 @@ if(isset($_POST['status'])){
 
 }
 
- //$invoices = $_SESSION['invoices'];
- $invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
+ $invoices = $_SESSION['invoices'];
+ //$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
 include "template.php"
 
 
