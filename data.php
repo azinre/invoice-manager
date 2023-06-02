@@ -7,7 +7,7 @@
     $invoices = $_SESSION['invoices'];
   }
   else{
-   $_SESSION['invoices'] = $invoices;
+   //$_SESSION['invoices'] = $invoices;
   }
 
 
