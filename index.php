@@ -1,6 +1,6 @@
 <?php 
 
-// session_start();
+session_start();
 require "data.php";
 
 
@@ -8,7 +8,7 @@ $pageTitle= 'All Invoices';
 $page ='all';
 
 if (isset($_GET['status'])) {
-    switch ($_GET['status']) {
+  switch ($_GET['status']) {
       case "draft.php":
         $page = 'draft';
         $pageTitle='draft Invoices';
@@ -25,7 +25,7 @@ if (isset($_GET['status'])) {
 }
 
 if(isset($_POST['status'])){
-    //var_dump($_POST);
+    var_dump($_POST);
     array_push($invoices,[
         'number' => generateInvoiceNumber(),
         'client' => $_POST['client'],
@@ -38,37 +38,6 @@ if(isset($_POST['status'])){
 
 }
 
-
-
-
-
-// if (isset($_SESSION['invoices'])) {
-//     $_SESSION['invoices'] = array(); 
-// }
-
-// $invoices = $_SESSION['invoices'];
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-   
-//     $client = $_POST['client'];
-//     $email = $_POST['email'];
-//     $amount = $_POST['amount'];
-//     $status = $_POST['status'];
-
-//     $newInvoice = array(
-//         'number' => generateInvoiceNumber(),
-//         'amount' => $amount,
-//         'status' => $status,
-//         'client' => $client,
-//         'email' => $email
-//     );
-//     $_SESSION['invoices'][] = $newInvoice;
-
-//     header('Location: index.php?status=' . $status);
-//     exit;
-// }
-
-
-
 function generateInvoiceNumber(){
     $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $lenghth = 5;
@@ -79,8 +48,9 @@ function generateInvoiceNumber(){
     }
     return ($number);
 }
- //$invoices = $_SESSION['invoices'];
-$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
+$invoices = $_SESSION['invoices'];
+//$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
+//var_dump($invoices);
 include "template.php"
 
 
