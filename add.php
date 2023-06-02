@@ -44,12 +44,16 @@ require "data.php";
         <input type="number" id="amount" name="amount" step="0.01" ><br><br>
 
         <label for="status">Invoice Status:</label>
-        <select id="status" name="status" >
-            <option value="">Select a Status</option>
-            <?php foreach($statuses as $status): ?>
-            <option value="<?php echo $status ; ?>">
-            <?php echo $status?>
-              </option>
+        <select id="status" name="status">
+        <option value="" selected>Select a Status</option>
+            <?php foreach ($statuses as $statusOption): ?>
+                <?php if ($statusOption !== 'all'): ?>
+                    <?php if ($statusOption === $_POST['status']): ?>
+                        <option value="<?php echo $statusOption; ?>" selected><?php echo $statusOption; ?></option>
+                    <?php else: ?>
+                        <option value="<?php echo $statusOption; ?>"><?php echo $statusOption; ?></option>
+                    <?php endif; ?>
+                <?php endif; ?>
             <?php endforeach; ?>
         </select><br><br>
         <button type="submit">Add Invoice</button>
