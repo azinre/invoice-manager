@@ -1,11 +1,23 @@
 <?php 
 session_start();
 require "data.php";
-//require "add.php";
-require "functions.php";
 
 $pageTitle= 'All Invoices';
 $page ='all';
+
+if (!isset($_SESSION['invoices'])) {
+    $_SESSION['invoices'] = []; 
+}
+
+if (isset($_GET['status'])){        
+  if ($_GET['status'] != 'all') {
+      $invoices = array_filter($invoices, function($invoice){
+          return $invoice['status'] == lcfirst($_GET['status']);        
+      });
+  };        
+};
+
+
 
 if (isset($_GET['status'])) {
     switch ($_GET['status']) {
@@ -39,25 +51,14 @@ if(isset($_POST['status'])){
     $_SESSION['invoices'] = $invoices;
 
 }
+
 if(isset($_POST['number'])){
   $number = $_POST['number'];
-  $index = array_key_first(array_filter($invoices, function ($invoice) use ($number) {
-      return $invoice['number'] == $number;
-  }));
-  if ($index !== null) {
-      
-      unset($invoices[$index]);
-      
-      
-      $invoices = array_values($invoices);
-
-      
-      $_SESSION['invoices'] = $invoices;
-
-  //unset($_SESSION['invoices'][$index]);
-  }
+  $sql = 'DELETE FROM invoices WHERE number = :number';
+  $stmt = $db->prepare($sql);
+  $stmt->execute([':number' => $number]);
+  header("Location: index.php?status=" . $status);
 }
-
 
  $invoices = $_SESSION['invoices'];
  //$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];

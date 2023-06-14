@@ -20,22 +20,18 @@ require "data.php";
     <div class="navbar-header">
      
     </div>
-    <ul class="nav navbar-nav">
-    <?php foreach ($statuses as $status): ?>
-      <li class="active">
-          <?php if($status ==='all'): ?>
-              <a class="nav-link" href="index.php">All</a>             
-          <?php else :?>           
-           <a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a>
-           <?php endif; ?>        
-        </li>        
-        <?php endforeach; ?> 
+    <ul class="nav navbar-nav">    
+      <li class="active"><a class="nav-link" href="index.php?status=all">All</a></li>                     
+      <?php foreach ($statuses as $status): ?>   
+        <li><a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a></li>        
+      <?php endforeach; ?> 
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="add.php"><span class="glyphicon glyphicon-user"></span> Add invoices</a></li>
     </ul>
   </div>
 </nav>
+<!-- <p>"there are <?php  echo count($invoices)?>"</p> -->
 <h1><?php echo $pageTitle; ?></h1>  
 <div class="container">
  <table class="table table-hover">
@@ -63,10 +59,11 @@ require "data.php";
           <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
         </td>
         <td>
-        <form method="post" action="index.php">
-            <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
-            <button type="submit" class="delete-button">Delete</button>
-        </form>
+          <form method="post" action="index.php">
+              <input type="hidden" name="action" value="delete">
+              <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
+              <button type="submit" class="delete-button">Delete</button>
+          </form>
         </td>
     </tr>
   <?php endforeach; ?>

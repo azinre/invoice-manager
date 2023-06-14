@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 require "data.php";
 require "functions.php";
 
@@ -18,8 +18,10 @@ if (!$invoice) {
     exit;
 }
 
-
+$errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    //$errors = [];
     $client = $_POST['client'];
     $email = $_POST['email'];
     $amount = $_POST['amount'];
@@ -54,21 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Invalid Invoice Status.';
     }
 
-    // if (empty($errors)) {
-    //     array_push($invoices, [
-    //         'number' => generateInvoiceNumber(),
-    //         'client' => $client,
-    //         'email' => $email,
-    //         'amount' => $amount,
-    //         'status' => $status
-    //     ]); 
-    // foreach ($invoices as &$inv) {
-    //     if ($inv['number'] === $invoiceNumber) {
-    //         $inv = $invoice;
-    //         break;
-    //     }
-    // } 
-    if (empty($errors)) {
+    if (empty($errors))
+     {
+        $status_id = id_match($status);
         foreach ($invoices as &$inv) {
             if ($inv['number'] === $invoiceNumber) {
                 $inv['client'] = $client;
@@ -79,7 +69,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }    
     $_SESSION['invoices'] = $invoices;
-    header("Location: index.php");
+    $sql = 'UPDATE invoices SET client = :client, amount = :amount, status_id = :status_id, email = :email WHERE number = :number';
+    $stmt = $db->prepare($sql);
+    $stmt->execute([
+        ':client' => $client,
+        ':amount' => $amount,
+        ':status_id' => $status_id,
+        ':email' => $email,
+        ':number' => $invoiceNumber
+    ]);
+    
+    if ($status == 'all') {
+        header("Location: index.php");
+    } else {
+        header("Location: index.php?status=" . $status);
+    }
+    
     exit;
     }
 }
@@ -99,15 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container-fluid">
         <div class="navbar-header">
         </div>
-        <ul class="nav navbar-nav">
-        <?php foreach ($statuses as $status): ?>
-        <li class="active">
-            <?php if($status ==='all'): ?>
-                <a class="nav-link" href="index.php">All Invoices</a>             
-            <?php else :?>           
-            <a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a>
-            <?php endif; ?>        
-            </li>        
+        <ul class="nav navbar-nav">    
+            <li class="active"><a class="nav-link" href="index.php?status=all">All</a></li>                     
+            <?php foreach ($statuses as $status): ?>   
+                <li><a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a></li>        
             <?php endforeach; ?> 
         </ul>
         <ul class="nav navbar-nav navbar-right">

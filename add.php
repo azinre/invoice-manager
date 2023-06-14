@@ -41,14 +41,6 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         $errors[] = 'Invalid Invoice Status.';
     }
 
-    // if (empty($errors)) {
-    //     array_push($invoices, [
-    //         'number' => generateInvoiceNumber(),
-    //         'client' => $client,
-    //         'email' => $email,
-    //         'amount' => $amount,
-    //         'status' => $status
-    //     ]);
     if (empty($errors)) {
         $newInvoice = [
             'number' => generateInvoiceNumber(),
@@ -58,8 +50,19 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
             'status' => $status
         ];
 
+        $invoices[] = $newInvoice;
         $_SESSION['invoices'][] = $newInvoice;
-
+        $sql = 'INSERT INTO invoices (number, client, email, amount, status_id) VALUES (:number, :client, :email, :amount, :status_id)';
+        $stmt = $db->prepare($sql);
+        $stmt->execute([
+            ':number' => generateInvoiceNumber(),
+            ':client' => $client,
+            ':email' => $email,
+            ':amount' => $amount,
+            ':status_id' => id_match($status)
+        ]);
+        
+       
         header("Location: index.php");
         exit();
     }
@@ -67,11 +70,6 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
 
 }
 
-// $formData = isset($_SESSION['form_data']) ? $_SESSION['form_data'] : [];
-//  $errors = isset($_SESSION['errors']) ? $_SESSION['errors'] : [];
-
-//  unset($_SESSION['form_data']);
-//  unset($_SESSION['errors']);
 ?>
 
 <!DOCTYPE html>
@@ -88,16 +86,11 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
   <div class="container-fluid">
     <div class="navbar-header">
     </div>
-    <ul class="nav navbar-nav">
-    <?php foreach ($statuses as $status): ?>
-      <li class="active">
-          <?php if($status ==='all'): ?>
-              <a class="nav-link" href="index.php">All Invoices</a>             
-          <?php else :?>           
-           <a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a>
-           <?php endif; ?>        
-        </li>        
-        <?php endforeach; ?> 
+    <ul class="nav navbar-nav">    
+      <li class="active"><a class="nav-link" href="index.php?status=all">All</a></li>                     
+      <?php foreach ($statuses as $status): ?>   
+        <li><a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a></li>        
+      <?php endforeach; ?> 
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="add.php"><span class="glyphicon glyphicon-user"></span> Add invoices</a></li>
