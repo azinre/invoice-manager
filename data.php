@@ -33,15 +33,16 @@
 }
 
 
-  $status = '';
-  if (isset($_GET['status'])) {
-      $status = $_GET['status'];
-      $_SESSION['status'] = $status;
-  } else {
-      if (isset($_SESSION['status'])) {
-          $status = $_SESSION['status'];
-      }
-  }
+
+//   $status = '';
+//   if (isset($_GET['status'])) {
+//       $status = $_GET['status'];
+//       $_SESSION['status'] = $status;
+//   } else {
+//       if (isset($_SESSION['status'])) {
+//           $status = $_SESSION['status'];
+//       }
+//   }
 
   if (!function_exists('id_match')){
   function id_match($status) {

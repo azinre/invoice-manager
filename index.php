@@ -1,13 +1,13 @@
 <?php 
-session_start();
+//session_start();
 require "data.php";
 
 $pageTitle= 'All Invoices';
 $page ='all';
 
-if (!isset($_SESSION['invoices'])) {
-    $_SESSION['invoices'] = []; 
-}
+// if (!isset($_SESSION['invoices'])) {
+//     $_SESSION['invoices'] = []; 
+// }
 
 if (isset($_GET['status'])){        
   if ($_GET['status'] != 'all') {
@@ -48,7 +48,7 @@ if(isset($_POST['status'])){
         'status' => $_POST['status']
     ]);
 
-    $_SESSION['invoices'] = $invoices;
+    //$_SESSION['invoices'] = $invoices;
 
 }
 
@@ -60,7 +60,7 @@ if(isset($_POST['number'])){
   header("Location: index.php?status=" . $status);
 }
 
- $invoices = $_SESSION['invoices'];
+ //$invoices = $_SESSION['invoices'];
  //$invoices = isset($_SESSION['invoices']) ? $_SESSION['invoices'] : [];
 include "template.php"
 
