@@ -23,6 +23,14 @@
   foreach ($statusesArr as $status) {
     $statuses[] = $status['status'];
   }
+  
+  if (!function_exists('sanitize')){
+  function sanitize($data) {
+    return array_map(function ($value) {
+      return htmlspecialchars(stripslashes(trim($value)));
+    }, $data);
+  }
+}
 
 
   $status = '';

@@ -21,11 +21,13 @@ if (!$invoice) {
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $invoie= sanitize($_POST);
+    extract($invoie);
     //$errors = [];
-    $client = $_POST['client'];
-    $email = $_POST['email'];
-    $amount = $_POST['amount'];
-    $status = $_POST['status'];
+    // $client = $_POST['client'];
+    // $email = $_POST['email'];
+    // $amount = $_POST['amount'];
+    // $status = $_POST['status'];
 
     if (empty($client)){
         $errors[] = 'Client name is required.';

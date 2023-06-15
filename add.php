@@ -2,7 +2,7 @@
 require "data.php";
 require "functions.php";
 //require "index.php";
-session_start();
+//session_start();
 
 $errors = [];
 
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         ];
 
         $invoices[] = $newInvoice;
-        $_SESSION['invoices'][] = $newInvoice;
+        //$_SESSION['invoices'][] = $newInvoice;
         $sql = 'INSERT INTO invoices (number, client, email, amount, status_id) VALUES (:number, :client, :email, :amount, :status_id)';
         $stmt = $db->prepare($sql);
         $stmt->execute([
