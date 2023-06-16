@@ -11,6 +11,14 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
     $email = $_POST['email'];
     $amount = $_POST['amount'];
     $status = $_POST['status'];
+    $text= $_FILES['text'];
+
+    if ($text['error'] === UPLOAD_ERR_OK) {
+        $fileExt = strtolower(pathinfo($text['name'], PATHINFO_EXTENSION));
+        if ($fileExt !== 'pdf') {
+            $errors[] = 'Invalid file format. Only PDF files are allowed.';
+        }
+    }
 
     if (empty($client)){
         $errors[] = 'Client name is required.';
@@ -50,8 +58,12 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
             'status' => $status
         ];
 
+        
+         $textFileName = saveText($newInvoice['number'], $text);
+      
+
         $invoices[] = $newInvoice;
-        //$_SESSION['invoices'][] = $newInvoice;
+       
         $sql = 'INSERT INTO invoices (number, client, email, amount, status_id) VALUES (:number, :client, :email, :amount, :status_id)';
         $stmt = $db->prepare($sql);
         $stmt->execute([
@@ -107,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         </ul>
     </div>
 <?php endif; ?>
-<form action="add.php" method="post">                       
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+<!-- <form action="add.php" method="post" enctype="multipart/form-data">                        -->
     <label for="client">Client Name:</label>
     <input type="text" id="client" name="client" value="<?php echo isset($_POST['client']) ? $_POST['client'] : ''; ?>"><br><br>
     <label for="email">Client Email:</label>
@@ -127,6 +140,8 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
             <?php endif; ?>
         <?php endforeach; ?>
     </select><br><br>
+    <label for="text">Upload file (PDF only):</label>
+    <input type="file" id="text" name="text" accept=".pdf" multiple><br><br>
     <button type="submit">Add Invoice</button>
 </form> 
 <script src="path/to/bootstrap.min.js"></script>   

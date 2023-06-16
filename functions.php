@@ -10,4 +10,24 @@ if (!function_exists('generateInvoiceNumber')) {function generateInvoiceNumber()
     return ($number);
 }
 }
-?>
+
+function saveText($invoiceNumber, $text) {
+    //$text= $_FILES['text'];
+
+    if($text['error']===UPLOAD_ERR_OK);
+    {
+    //$ext = strtolower(pathinfo($text['name'], PATHINFO_EXTENSION));
+    $ext = 'pdf';
+    $filename = $invoiceNumber . '.' . $ext;
+
+    if(!file_exists('texts/')){
+        mkdir('texts/');
+      }
+    $dest = 'texts/' . $filename;
+
+    if (move_uploaded_file($text['tmp_name'], $dest)) {
+        return $filename; 
+    }
+
+    return false; 
+}}
