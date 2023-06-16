@@ -55,7 +55,6 @@ require "data.php";
         <td> <?php echo  $invoice['client']; ?> </td>
         <td> <?php echo  $invoice['email']; ?> </td>
         <td>
-        <td>
           <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
         </td>
         <td>

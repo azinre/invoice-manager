@@ -21,13 +21,21 @@ if (!$invoice) {
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $invoie= sanitize($_POST);
-    extract($invoie);
-    //$errors = [];
-    // $client = $_POST['client'];
-    // $email = $_POST['email'];
-    // $amount = $_POST['amount'];
-    // $status = $_POST['status'];
+    // $invoie= sanitize($_POST);
+    // extract($invoie);
+    $errors = [];
+    $client = $_POST['client'];
+    $email = $_POST['email'];
+    $amount = $_POST['amount'];
+    $status = $_POST['status'];
+    $text= $_FILES['text'];
+
+    if ($text['error'] === UPLOAD_ERR_OK) {
+        $fileExt = strtolower(pathinfo($text['name'], PATHINFO_EXTENSION));
+        if ($fileExt !== 'pdf') {
+            $errors[] = 'Invalid file format. Only PDF files are allowed.';
+        }
+    }
 
     if (empty($client)){
         $errors[] = 'Client name is required.';
@@ -70,7 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 break;
             }
         }    
-    $_SESSION['invoices'] = $invoices;
+    //$_SESSION['invoices'] = $invoices;
+    $textFileName = saveText($newInvoice['number'], $text);
     $sql = 'UPDATE invoices SET client = :client, amount = :amount, status_id = :status_id, email = :email WHERE number = :number';
     $stmt = $db->prepare($sql);
     $stmt->execute([
@@ -144,9 +153,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="pending" <?php if ($invoice['status'] === 'pending') echo 'selected'; ?>>Pending</option>
             <option value="paid" <?php if ($invoice['status'] === 'paid') echo 'selected'; ?>>Paid</option>
         </select><br><br>
-
+        <label for="text">Upload file (PDF only):</label>
+        <!-- <button type="submit">Add Invoice</button> -->
+        <input type="file" id="text" name="text" accept=".pdf" multiple><br><br>
+       
         <button type="submit">Update Invoice</button>
     </form>
+    
     <form class = "form" method="post" action="delete.php">
         <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
         <button class="button danger"> Delete </button>
