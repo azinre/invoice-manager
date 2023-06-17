@@ -53,13 +53,18 @@ require "data.php";
         <td> <?php echo  $invoice['amount']; ?> </td>
         <td> <?php echo  $invoice['status']; ?> </td>
         <td> <?php echo  $invoice['client']; ?> </td>
-        <td> <?php echo  $invoice['email']; ?> </td>
+        <td> <?php echo  $invoice['email']; ?> </td>        
+        <td>
+          <?php if (file_exists('texts/' . $invoice['number']. '.pdf')) : ?>
+          <a href="texts/<?php echo $invoice['number'];?>.pdf">View</a> 
+          <?php endif; ?>        
+        </td>       
         <td>
           <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
         </td>
         <td>
           <form method="post" action="index.php">
-              <input type="hidden" name="action" value="delete">
+              <!-- <input type="hidden" name="action" value="delete"> -->
               <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
               <button type="submit" class="delete-button">Delete</button>
           </form>

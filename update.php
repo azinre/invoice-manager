@@ -21,20 +21,16 @@ if (!$invoice) {
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // $invoie= sanitize($_POST);
-    // extract($invoie);
     $errors = [];
     $client = $_POST['client'];
     $email = $_POST['email'];
     $amount = $_POST['amount'];
     $status = $_POST['status'];
-    $text= $_FILES['text'];
+    $text = isset($_FILES['text']) ? $_FILES['text'] : null;
 
-    if ($text['error'] === UPLOAD_ERR_OK) {
-        $fileExt = strtolower(pathinfo($text['name'], PATHINFO_EXTENSION));
-        if ($fileExt !== 'pdf') {
-            $errors[] = 'Invalid file format. Only PDF files are allowed.';
-        }
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $fileExt = (pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+        
     }
 
     if (empty($client)){
@@ -79,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }    
     //$_SESSION['invoices'] = $invoices;
-    $textFileName = saveText($newInvoice['number'], $text);
+    
     $sql = 'UPDATE invoices SET client = :client, amount = :amount, status_id = :status_id, email = :email WHERE number = :number';
     $stmt = $db->prepare($sql);
     $stmt->execute([
@@ -89,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':email' => $email,
         ':number' => $invoiceNumber
     ]);
-    
+    $textFileName = saveText($invoiceNumber, $text);
     if ($status == 'all') {
         header("Location: index.php");
     } else {
@@ -137,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 
-    <form action="" method="post">
+    <<form class="form" method="post" enctype="multipart/form-data">
         <label for="client">Client Name:</label>
         <input type="text" id="client" name="client" value="<?php echo $invoice['client']; ?>"><br><br>
 
@@ -154,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="paid" <?php if ($invoice['status'] === 'paid') echo 'selected'; ?>>Paid</option>
         </select><br><br>
         <label for="text">Upload file (PDF only):</label>
-        <!-- <button type="submit">Add Invoice</button> -->
+       
         <input type="file" id="text" name="text" accept=".pdf" multiple><br><br>
        
         <button type="submit">Update Invoice</button>

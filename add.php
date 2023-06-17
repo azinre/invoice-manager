@@ -11,13 +11,10 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
     $email = $_POST['email'];
     $amount = $_POST['amount'];
     $status = $_POST['status'];
-    $text= $_FILES['text'];
+    $text = isset($_FILES['text']) ? $_FILES['text'] : null;
 
-    if ($text['error'] === UPLOAD_ERR_OK) {
-        $fileExt = strtolower(pathinfo($text['name'], PATHINFO_EXTENSION));
-        if ($fileExt !== 'pdf') {
-            $errors[] = 'Invalid file format. Only PDF files are allowed.';
-        }
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $fileExt = (pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
     }
 
     if (empty($client)){
@@ -50,36 +47,33 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
     }
 
     if (empty($errors)) {
+        $newNumber= generateInvoiceNumber();
         $newInvoice = [
-            'number' => generateInvoiceNumber(),
+            'number' => $newNumber,
             'client' => $client,
             'email' => $email,
             'amount' => $amount,
             'status' => $status
+            
         ];
-
-        
-         $textFileName = saveText($newInvoice['number'], $text);
       
-
-        $invoices[] = $newInvoice;
+        
        
         $sql = 'INSERT INTO invoices (number, client, email, amount, status_id) VALUES (:number, :client, :email, :amount, :status_id)';
         $stmt = $db->prepare($sql);
         $stmt->execute([
-            ':number' => generateInvoiceNumber(),
+            ':number' => $newNumber,
             ':client' => $client,
             ':email' => $email,
             ':amount' => $amount,
             ':status_id' => id_match($status)
         ]);
         
-       
+        $textFileName = saveText($newInvoice['number'], $text);
+        $invoices[] = $newInvoice;
         header("Location: index.php");
         exit();
     }
-
-
 }
 
 ?>
@@ -119,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
         </ul>
     </div>
 <?php endif; ?>
-<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
+<form class="form" method="post" enctype="multipart/form-data">
 <!-- <form action="add.php" method="post" enctype="multipart/form-data">                        -->
     <label for="client">Client Name:</label>
     <input type="text" id="client" name="client" value="<?php echo isset($_POST['client']) ? $_POST['client'] : ''; ?>"><br><br>
@@ -140,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD']=== 'POST'){
             <?php endif; ?>
         <?php endforeach; ?>
     </select><br><br>
-    <label for="text">Upload file (PDF only):</label>
+    <label for="text">Upload file (PDF only):</label>      
     <input type="file" id="text" name="text" accept=".pdf" multiple><br><br>
     <button type="submit">Add Invoice</button>
 </form> 
