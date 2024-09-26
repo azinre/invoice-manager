@@ -1,5 +1,6 @@
 <?php 
 require "data.php";
+//session_start();
 ?>
 
 <!DOCTYPE html>
@@ -9,33 +10,28 @@ require "data.php";
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    
     <title><?php echo $pageTitle; ?></title>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-inverse">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">  
-      <ul class="navbar-nav">        
-        <?php foreach ($statuses as $status): ?>
-        <li class="nav-item">
-          <?php if($status ==='all'): ?>
-              <a class="nav-link" href="index.php">All</a>             
-          <?php else :?>           
-           <a class="nav-link" href='<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a>
-           <?php endif; ?>
-        </li>
-        <?php endforeach; ?>                    
-      </ul>      
+    <div class="navbar-header">
+     
     </div>
+    <ul class="nav navbar-nav">    
+      <li class="active"><a class="nav-link" href="index.php?status=all">All</a></li>                     
+      <?php foreach ($statuses as $status): ?>   
+        <li><a class="nav-link" href='index.php?status=<?php echo "$status.php"?>'><?php echo ucfirst($status); ?></a></li>        
+      <?php endforeach; ?> 
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="add.php"><span class="glyphicon glyphicon-user"></span> Add invoices</a></li>
+    </ul>
   </div>
 </nav>
+<!-- <p>"there are <?php  echo count($invoices)?>"</p> -->
 <h1><?php echo $pageTitle; ?></h1>  
 <div class="container">
  <table class="table table-hover">
@@ -57,9 +53,25 @@ require "data.php";
         <td> <?php echo  $invoice['amount']; ?> </td>
         <td> <?php echo  $invoice['status']; ?> </td>
         <td> <?php echo  $invoice['client']; ?> </td>
-        <td> <?php echo  $invoice['email']; ?> </td>
-  </tr>
+        <td> <?php echo  $invoice['email']; ?> </td>        
+        <td>
+          <?php if (file_exists('texts/' . $invoice['number']. '.pdf')) : ?>
+          <a href="texts/<?php echo $invoice['number'];?>.pdf">View</a> 
+          <?php endif; ?>        
+        </td>       
+        <td>
+          <a href="update.php?invoice_number=<?php echo $invoice['number']; ?>">Edit</a>
+        </td>
+        <td>
+          <form method="post" action="index.php">
+              <!-- <input type="hidden" name="action" value="delete"> -->
+              <input type="hidden" name="number" value="<?php echo $invoice['number']; ?>">
+              <button type="submit" class="delete-button">Delete</button>
+          </form>
+        </td>
+    </tr>
   <?php endforeach; ?>
+  
 </table>
 
 </body>
